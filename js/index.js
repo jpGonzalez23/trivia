@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let puntaje = 0;
     let preguntaActual = 0;
     let tiempoInicio = 0;
+    let resultados = [];
 
     empezarBtn.addEventListener('click', () => {
         nombreJugador = nombreInput.value;
@@ -60,14 +61,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const tiempoTotal = ((Date.now() - tiempoInicio) / 1000).toFixed(2);
         cartsSection.style.display = 'none';
         tablaSection.style.display = 'block';
-
+    
+        // Crear el objeto de resultados para el jugador actual
+        const resultadoActual = {
+            nombre: nombreJugador,
+            puntaje: puntaje,
+            tiempo: `${tiempoTotal} segundos`
+        };
+    
         // Agrega los resultados a la tabla
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
-            <td>${nombreJugador}</td>
-            <td>${puntaje} / ${preguntas.length}</td>
-            <td>${tiempoTotal} segundos</td>
+            <td>${resultadoActual.nombre}</td>
+            <td>${resultadoActual.puntaje} / ${preguntas.length}</td>
+            <td>${resultadoActual.tiempo}</td>
         `;
         tablaResultados.appendChild(nuevaFila);
+    
+        // Enviar solo el resultado actual al servidor
+        enviarResultadosAlServidor(resultadoActual);
     };
+    
+    const enviarResultadosAlServidor = (resultadoActual) => {
+        fetch('http://localhost:3000/guardar_resultados', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(resultadoActual)
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Resultado guardado en el servidor:', result);
+        })
+        .catch(error => {
+            console.error('Error al guardar los resultados:', error);
+        });
+    };
+    
 });
