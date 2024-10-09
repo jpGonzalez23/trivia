@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/styles.css">
+    <title>Lanzamiento</title>
+</head>
+<body>
+    <!-- Sección de bienvenida y formulario para ingresar el nombre -->
+    <section id="form-abm">
+        <h1>¡¡¡Bienvenidos al Juego!!!</h1>
+        <form class="abm-form" id="abm-form">
+            <label for="txtNombre">Ingrese su nombre:</label>
+            <input type="text" id="txtNombre" name="txtNombre" required />
+        </form>
+        <button class="empezar-btn" id="empezar-btn" type="button">Empezar</button>
+    </section>
+
+    <!-- Sección de preguntas -->
+    <section id="carts" style="display: none;">
+        <div class="cart-pregunta" id="cart-pregunta">
+            <h2 id="pregunta-texto">Pregunta:</h2>
+            <div class="opciones">
+                <!-- Las opciones se generarán dinámicamente mediante JavaScript -->
+                <label>
+                    <input type="radio" name="opciones" id="opcion1" value="1">
+                    <span>Opción 1</span>
+                </label>
+                <label>
+                    <input type="radio" name="opciones" id="opcion2" value="2">
+                    <span>Opción 2</span>
+                </label>
+                <label>
+                    <input type="radio" name="opciones" id="opcion3" value="3">
+                    <span>Opción 3</span>
+                </label>
+                <label>
+                    <input type="radio" name="opciones" id="opcion4" value="4">
+                    <span>Opción 4</span>
+                </label>
+            </div>
+            <button id="siguiente-btn" type="button">Siguiente Pregunta</button>
+        </div>
+    </section>
+
+    <!-- Tabla de resultados -->
+    <section id="tabla" style="display: none;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Puntaje</th>
+                    <th>Tiempo Total</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-resultados">
+                <!-- Los resultados se insertarán dinámicamente -->
+            </tbody>
+        </table>
+    </section>
+
+    <script type="module" src="./js/index.js"></script>
+</body>
+</html>
