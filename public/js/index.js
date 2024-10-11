@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cartsSection.appendChild(contadorElement);
     cartsSection.appendChild(puntajeElement);
 
-    // Inicia el juego al hacer clic en el botón "Empezar"
     empezarBtn.addEventListener('click', () => {
         const nombreJugador = nombreInput.value;
         if (nombreJugador) {
@@ -41,10 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Avanza a la siguiente pregunta al hacer clic en "Siguiente"
     siguienteBtn.addEventListener('click', procesarRespuesta);
-
-    // Muestra el ranking al hacer clic en el botón de "Ver Ranking"
     rankingBtn.addEventListener('click', mostrarRanking);
 });
 
@@ -74,8 +70,7 @@ function mostrarPregunta() {
             opcion.textContent = pregunta.opciones[index];
         });
 
-        // Reiniciar el tiempo y el contador para esta pregunta
-        iniciarContador();
+        iniciarContador();  // Reinicia el tiempo para la nueva pregunta
 
     } else {
         finalizarJuego();
@@ -102,8 +97,7 @@ function iniciarContador() {
 
         if (tiempoRestante === 0) {
             clearInterval(contadorInterval);
-            preguntaActual++;
-            mostrarPregunta();
+            procesarRespuestaAutomatica();  // Avanza automáticamente si se acaba el tiempo
         }
     }, 1000);
 
@@ -111,8 +105,7 @@ function iniciarContador() {
 }
 
 /**
- * Procesa la respuesta seleccionada por el usuario.
- * Calcula el puntaje según la rapidez de la respuesta y avanza a la siguiente pregunta.
+ * Procesa la respuesta seleccionada por el usuario o avanza automáticamente si no se selecciona ninguna.
  */
 function procesarRespuesta() {
     const respuestaSeleccionada = document.querySelector('input[name="opciones"]:checked');
@@ -122,13 +115,17 @@ function procesarRespuesta() {
             calcularPuntaje();
         }
 
-        preguntaActual++;
-        clearInterval(contadorInterval);
-        mostrarPregunta();
-
+        avanzarPregunta();
     } else {
         alert('Por favor, seleccione una opción.');
     }
+}
+
+/**
+ * Procesa la respuesta automática si el tiempo se agota.
+ */
+function procesarRespuestaAutomatica() {
+    avanzarPregunta();  // Avanza a la siguiente pregunta
 }
 
 /**
@@ -155,19 +152,26 @@ function calcularPuntaje() {
 }
 
 /**
+ * Avanza a la siguiente pregunta.
+ */
+function avanzarPregunta() {
+    preguntaActual++;
+    clearInterval(contadorInterval);  // Detiene el contador de la pregunta actual
+    mostrarPregunta();  // Muestra la siguiente pregunta
+}
+
+/**
  * Finaliza el juego, muestra los resultados y envía los datos al servidor.
  */
 function finalizarJuego() {
     const tiempoTotal = ((Date.now() - tiempoInicioPregunta) / 1000).toFixed(2);
 
-    // Oculta la sección de preguntas y muestra los resultados
     document.getElementById('carts').style.display = 'none';
     document.getElementById('tabla').style.display = 'block';
 
     jugador.cantPuntos = puntaje;
     jugador.tiempoTotal = parseFloat(tiempoTotal);
 
-    // Agregar los resultados a la tabla
     const nuevaFila = document.createElement('tr');
     nuevaFila.innerHTML = `
         <td>${jugador.nombre}</td>
@@ -188,16 +192,16 @@ function enviarResultadosAlServidor(jugador) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(jugador.toJSON())
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor');
-            }
-            return response.json();
-        })
-        .then(() => mostrarRanking())
-        .catch(error => {
-            console.error('Error al guardar los resultados:', error.message);
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json();
+    })
+    .then(() => mostrarRanking())
+    .catch(error => {
+        console.error('Error al guardar los resultados:', error.message);
+    });
 }
 
 /**
@@ -205,22 +209,22 @@ function enviarResultadosAlServidor(jugador) {
  */
 function mostrarRanking() {
     fetch('/ranking')
-        .then(response => response.json())
-        .then(ranking => {
-            const tablaResultados = document.getElementById('tabla-resultados');
-            tablaResultados.innerHTML = '';  // Limpiar la tabla antes de mostrar el ranking
+    .then(response => response.json())
+    .then(ranking => {
+        const tablaResultados = document.getElementById('tabla-resultados');
+        tablaResultados.innerHTML = '';  // Limpiar la tabla antes de mostrar el ranking
 
-            ranking.forEach(jugador => {
-                const nuevaFila = document.createElement('tr');
-                nuevaFila.innerHTML = `
-                    <td>${jugador.nombre}</td>
-                    <td>${jugador.cantPuntos}</td>
-                    <td>${jugador.tiempoTotal} segundos</td>
-                `;
-                tablaResultados.appendChild(nuevaFila);
-            });
-        })
-        .catch(error => {
-            console.error('Error al obtener el ranking:', error.message);
+        ranking.forEach(jugador => {
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.innerHTML = `
+                <td>${jugador.nombre}</td>
+                <td>${jugador.cantPuntos}</td>
+                <td>${jugador.tiempoTotal} segundos</td>
+            `;
+            tablaResultados.appendChild(nuevaFila);
         });
+    })
+    .catch(error => {
+        console.error('Error al obtener el ranking:', error.message);
+    });
 }

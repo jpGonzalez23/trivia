@@ -2,19 +2,7 @@
   {
     "id": 1,
     "nombre": "pepe",
-    "cantPuntos": 2,
-    "tiempoTotal": 1.31
-  },
-  {
-    "id": 1,
-    "nombre": "pepe",
     "cantPuntos": 10,
-    "tiempoTotal": 13.29
-  },
-  {
-    "id": 1,
-    "nombre": "asdasd",
-    "cantPuntos": 11,
-    "tiempoTotal": 3.07
+    "tiempoTotal": 3.92
   }
 ]
