@@ -77,7 +77,13 @@ label, input, button {
 
 .contador {
     font-size: 1.5em;
-    color: red;
     margin: 10px 0;
+    display: flex;
+    justify-content: center
+}
+
+.siguiente-btn {
+    display: flex;
+    justify-content: center;
 }
 

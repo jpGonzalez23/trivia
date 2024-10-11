@@ -1,34 +1,20 @@
 [
   {
     "id": 1,
-    "nombre": "juan",
-    "cantPuntos": 1,
-    "tiempoTotal": 10.61
+    "nombre": "pepe",
+    "cantPuntos": 2,
+    "tiempoTotal": 1.31
   },
   {
     "id": 1,
     "nombre": "pepe",
-    "cantPuntos": 3,
-    "tiempoTotal": 1.33
+    "cantPuntos": 10,
+    "tiempoTotal": 13.29
   },
   {
     "id": 1,
-    "nombre": "asdasd"
-  },
-  {
-    "id": 1,
-    "nombre": "pepe"
-  },
-  {
-    "id": 1,
-    "nombre": "pepe",
-    "cantPuntos": 3,
-    "tiempoTotal": 1.76
-  },
-  {
-    "id": 1,
-    "nombre": "shock",
-    "cantPuntos": 3,
-    "tiempoTotal": 1.15
+    "nombre": "asdasd",
+    "cantPuntos": 11,
+    "tiempoTotal": 3.07
   }
 ]
