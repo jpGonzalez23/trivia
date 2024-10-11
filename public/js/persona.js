@@ -1,12 +1,13 @@
 export default class Persona { 
+    static contadorPersonas = 0;
     #id;
     #nombre;
     #cantPuntos;
     #tiempoTotal;
 
 
-    constructor(id, nombre, cantPuntos, tiempoTotal) {
-        this.#id = id;
+    constructor(nombre, cantPuntos = 0, tiempoTotal = 0) {
+        this.#id = ++Persona.contadorPersonas;
         this.#nombre = nombre;
         this.#cantPuntos = cantPuntos;
         this.#tiempoTotal = tiempoTotal;

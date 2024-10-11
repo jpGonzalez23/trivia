@@ -1,5 +1,18 @@
 import Persona from './persona.js';
 
+let preguntas = [
+    { pregunta: "¿Cuál es la capital de Francia?", opciones: ["París", "Roma", "Madrid", "Londres"], correcta: 1 },
+    { pregunta: "¿Cuál es el planeta más grande del sistema solar?", opciones: ["Tierra", "Saturno", "Júpiter", "Marte"], correcta: 3 },
+    { pregunta: "¿Qué elemento químico tiene el símbolo 'O'?", opciones: ["Oro", "Oxígeno", "Osmio", "Obsidiana"], correcta: 2 },
+];
+
+let jugador = null;
+let puntaje = 0;
+let preguntaActual = 0;
+let tiempoInicioPregunta = 0;
+let tiempoRestante = 30;  // 30 segundos por pregunta
+let contadorInterval;  // Para controlar el intervalo del contador
+
 document.addEventListener('DOMContentLoaded', () => {
     const nombreInput = document.getElementById('txtNombre');
     const empezarBtn = document.getElementById('empezar-btn');
@@ -9,28 +22,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const tablaSection = document.getElementById('tabla');
     const tablaResultados = document.getElementById('tabla-resultados');
     const rankingBtn = document.getElementById('ver-ranking-btn');  // Botón para ver el ranking
+    const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
 
-    let preguntas = [
-        { pregunta: "¿Cuál es la capital de Francia?", opciones: ["París", "Roma", "Madrid", "Londres"], correcta: 1 },
-        { pregunta: "¿Cuál es el planeta más grande del sistema solar?", opciones: ["Tierra", "Saturno", "Júpiter", "Marte"], correcta: 3 },
-        { pregunta: "¿Qué elemento químico tiene el símbolo 'O'?", opciones: ["Oro", "Oxígeno", "Osmio", "Obsidiana"], correcta: 2 },
-    ];
-
-    let jugador = null;
-    let puntaje = 0;
-    let preguntaActual = 0;
-    let tiempoInicio = 0;
-    let idJugador = 0;
+    // Agregar el contador a la sección de preguntas
+    cartsSection.appendChild(contadorElement);
+    contadorElement.className = 'contador';  // Puedes agregar estilos CSS para el contador
 
     empezarBtn.addEventListener('click', () => {
         const nombreJugador = nombreInput.value;
         if (nombreJugador) {
             abmForm.style.display = 'none';
             cartsSection.style.display = 'block';
-            tiempoInicio = Date.now(); // Marca el inicio del tiempo
 
-            // Crear una nueva instancia de Persona para el jugador
-            jugador = new Persona(++idJugador, nombreJugador);
+            jugador = new Persona(nombreJugador);
             mostrarPregunta();
         } else {
             alert('Por favor, ingrese su nombre.');
@@ -44,6 +48,31 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('label span').forEach((opcion, index) => {
                 opcion.textContent = pregunta.opciones[index];
             });
+
+            // Reiniciar el tiempo para esta pregunta
+            tiempoRestante = 30;
+            contadorElement.textContent = `Tiempo restante: ${tiempoRestante} segundos`;
+
+            // Limpiar cualquier intervalo anterior
+            if (contadorInterval) {
+                clearInterval(contadorInterval);
+            }
+
+            // Iniciar el contador de tiempo
+            contadorInterval = setInterval(() => {
+                tiempoRestante--;
+                contadorElement.textContent = `Tiempo restante: ${tiempoRestante} segundos`;
+
+                // Si se acaba el tiempo, pasar a la siguiente pregunta
+                if (tiempoRestante === 0) {
+                    clearInterval(contadorInterval);
+                    preguntaActual++;
+                    mostrarPregunta();
+                }
+            }, 1000);
+
+            // Marca el inicio del tiempo para la pregunta
+            tiempoInicioPregunta = Date.now();
         } else {
             finalizarJuego();
         }
@@ -54,9 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (respuestaSeleccionada) {
             const indiceSeleccionado = parseInt(respuestaSeleccionada.value);
             if (indiceSeleccionado === preguntas[preguntaActual].correcta) {
-                puntaje++;
+                const tiempoRespuesta = (Date.now() - tiempoInicioPregunta) / 1000;
+
+                if (tiempoRespuesta >= 20 && tiempoRespuesta <= 30) {
+                    puntaje += 5;
+                } else if (tiempoRespuesta >= 10 && tiempoRespuesta < 20) {
+                    puntaje += 2;
+                } else if (tiempoRespuesta < 10) {
+                    puntaje += 1;
+                }
             }
             preguntaActual++;
+
+            clearInterval(contadorInterval);
             mostrarPregunta();
         } else {
             alert('Por favor, seleccione una opción.');
@@ -64,24 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const finalizarJuego = () => {
-        const tiempoTotal = ((Date.now() - tiempoInicio) / 1000).toFixed(2);
+        const tiempoTotal = ((Date.now() - tiempoInicioPregunta) / 1000).toFixed(2);
         cartsSection.style.display = 'none';
         tablaSection.style.display = 'block';
     
-        // Actualiza la información de puntaje y tiempo del jugador
         jugador.cantPuntos = puntaje;
         jugador.tiempoTotal = parseFloat(tiempoTotal);
     
-        // Agrega los resultados a la tabla local
         const nuevaFila = document.createElement('tr');
         nuevaFila.innerHTML = `
             <td>${jugador.nombre}</td>
-            <td>${jugador.cantPuntos} / ${preguntas.length}</td>
+            <td>${jugador.cantPuntos} /</td>
             <td>${jugador.tiempoTotal} segundos</td>
         `;
         tablaResultados.appendChild(nuevaFila);
     
-        // Enviar el resultado actual al servidor
         enviarResultadosAlServidor(jugador);
     };
     
@@ -91,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(jugador.toJSON())  // Convierte la instancia de Persona a JSON
+            body: JSON.stringify(jugador.toJSON())
         })
         .then(response => {
             if (!response.ok) {
@@ -100,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(() => {
-            // Después de guardar el resultado, muestra el ranking
             mostrarRanking();
         })
         .catch(error => {
@@ -108,18 +143,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Función para obtener y mostrar el ranking
     const mostrarRanking = () => {
         fetch('/ranking')
         .then(response => response.json())
         .then(ranking => {
-            tablaResultados.innerHTML = '';  // Limpia la tabla antes de mostrar el ranking
+            tablaResultados.innerHTML = '';
 
             ranking.forEach(jugador => {
                 const nuevaFila = document.createElement('tr');
                 nuevaFila.innerHTML = `
                     <td>${jugador.nombre}</td>
-                    <td>${jugador.cantPuntos} / ${preguntas.length}</td>
+                    <td>${jugador.cantPuntos}</td>
                     <td>${jugador.tiempoTotal} segundos</td>
                 `;
                 tablaResultados.appendChild(nuevaFila);
@@ -130,6 +164,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Opcional: Botón para ver el ranking en cualquier momento
     rankingBtn.addEventListener('click', mostrarRanking);
 });
