@@ -1,5 +1,17 @@
 import Persona from './persona.js';
 
+// Variables globales
+const nombreInput = document.getElementById('txtNombre');
+const empezarBtn = document.getElementById('empezar-btn');
+const cartsSection = document.getElementById('carts');
+const abmForm = document.getElementById('form-abm');
+const siguienteBtn = document.getElementById('siguiente-btn');
+const tablaSection = document.getElementById('tabla');
+const tablaResultados = document.getElementById('tabla-resultados');
+const rankingBtn = document.getElementById('ver-ranking-btn');
+const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
+const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
+
 let preguntas = [
     { pregunta: "¿Cuál es la capital de Francia?", opciones: ["París", "Roma", "Madrid", "Londres"], correcta: 1 },
     { pregunta: "¿Cuál es el planeta más grande del sistema solar?", opciones: ["Tierra", "Saturno", "Júpiter", "Marte"], correcta: 3 },
@@ -14,16 +26,7 @@ let contadorInterval;
 let tiempoInicioPregunta = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const nombreInput = document.getElementById('txtNombre');
-    const empezarBtn = document.getElementById('empezar-btn');
-    const cartsSection = document.getElementById('carts');
-    const abmForm = document.getElementById('form-abm');
-    const siguienteBtn = document.getElementById('siguiente-btn');
-    const tablaSection = document.getElementById('tabla');
-    const tablaResultados = document.getElementById('tabla-resultados');
-    const rankingBtn = document.getElementById('ver-ranking-btn');
-    const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
-    const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
+
 
     // Inicializa el contador y el puntaje en pantalla
     contadorElement.className = 'contador';
@@ -192,16 +195,16 @@ function enviarResultadosAlServidor(jugador) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(jugador.toJSON())
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
-        }
-        return response.json();
-    })
-    .then(() => mostrarRanking())
-    .catch(error => {
-        console.error('Error al guardar los resultados:', error.message);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            return response.json();
+        })
+        .then(() => mostrarRanking())
+        .catch(error => {
+            console.error('Error al guardar los resultados:', error.message);
+        });
 }
 
 /**
@@ -209,22 +212,22 @@ function enviarResultadosAlServidor(jugador) {
  */
 function mostrarRanking() {
     fetch('/ranking')
-    .then(response => response.json())
-    .then(ranking => {
-        const tablaResultados = document.getElementById('tabla-resultados');
-        tablaResultados.innerHTML = '';  // Limpiar la tabla antes de mostrar el ranking
+        .then(response => response.json())
+        .then(ranking => {
+            const tablaResultados = document.getElementById('tabla-resultados');
+            tablaResultados.innerHTML = '';  // Limpiar la tabla antes de mostrar el ranking
 
-        ranking.forEach(jugador => {
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.innerHTML = `
+            ranking.forEach(jugador => {
+                const nuevaFila = document.createElement('tr');
+                nuevaFila.innerHTML = `
                 <td>${jugador.nombre}</td>
                 <td>${jugador.cantPuntos}</td>
                 <td>${jugador.tiempoTotal} segundos</td>
             `;
-            tablaResultados.appendChild(nuevaFila);
+                tablaResultados.appendChild(nuevaFila);
+            });
+        })
+        .catch(error => {
+            console.error('Error al obtener el ranking:', error.message);
         });
-    })
-    .catch(error => {
-        console.error('Error al obtener el ranking:', error.message);
-    });
 }
