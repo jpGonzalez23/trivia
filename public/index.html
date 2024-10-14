@@ -8,7 +8,7 @@
 </head>
 <body>
     <!-- Sección de bienvenida y formulario para ingresar el nombre -->
-    <section id="form-abm" class="form-abm">
+    <section id="form-abm">
         <h1>¡¡¡Bienvenidos al Juego!!!</h1>
         <form class="abm-form" id="abm-form">
             <label for="txtNombre">Ingrese su nombre:</label>
@@ -22,8 +22,9 @@
     <section id="carts" style="display: none;">
         <div class="cart-pregunta" id="cart-pregunta">
             <h2 id="pregunta-texto">Pregunta:</h2>
-            <div class="contador"></div> <!-- Este elemento será llenado en JS -->
+            <div id="contador" class="contador"></div>
             <div class="opciones">
+                <!-- Las opciones se generarán dinámicamente mediante JavaScript -->
                 <label>
                     <input type="radio" name="opciones" id="opcion1" value="1">
                     <span>Opción 1</span>
@@ -41,7 +42,7 @@
                     <span>Opción 4</span>
                 </label>
             </div>
-            <!--<button class="siguiente-btn" id="siguiente-btn" type="button">Siguiente</button>;-->
+            <button id="siguiente-btn" type="button" class="siguiente-btn">Siguiente Pregunta</button>
         </div>
     </section>
 
@@ -60,7 +61,6 @@
             <tbody id="tabla-resultados">
                 <!-- Los resultados se insertarán dinámicamente -->
             </tbody>
-            <button class="ver-ranking-btn" id="ver-ranking-btn" type="button">Ver ranking</button>
         </table>
     </section>
 
