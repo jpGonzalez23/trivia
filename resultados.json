@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "nombre": "pepe",
+    "cantPuntos": 0,
+    "tiempoTotal": 33.01
+  },
+  {
+    "id": 2,
+    "nombre": "pepe",
+    "cantPuntos": 0,
+    "tiempoTotal": 33.01
+  },
+  {
+    "id": 3,
+    "nombre": "pepe",
+    "cantPuntos": 0,
+    "tiempoTotal": 30
+  },
+  {
+    "id": 4,
+    "nombre": "pepe",
+    "cantPuntos": 0,
+    "tiempoTotal": 30.01
+  },
+  {
+    "id": 5,
+    "nombre": "shock",
+    "cantPuntos": 0,
+    "tiempoTotal": 30
+  },
+  {
+    "id": 6,
+    "nombre": "shock",
+    "cantPuntos": 0,
+    "tiempoTotal": 30
+  },
+  {
+    "id": 7,
+    "nombre": "pepe",
+    "cantPuntos": 0,
+    "tiempoTotal": 32.01
+  }
+]
