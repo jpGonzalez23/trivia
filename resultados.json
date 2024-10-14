@@ -1,44 +1,44 @@
 [
   {
     "id": 1,
-    "nombre": "pepe",
+    "nombre": "sadfsd",
     "cantPuntos": 0,
-    "tiempoTotal": 33.01
+    "tiempoTotal": 28.01
   },
   {
     "id": 2,
-    "nombre": "pepe",
+    "nombre": "abi",
     "cantPuntos": 0,
-    "tiempoTotal": 33.01
+    "tiempoTotal": 32.02
   },
   {
     "id": 3,
-    "nombre": "pepe",
+    "nombre": "abi",
     "cantPuntos": 0,
-    "tiempoTotal": 30
+    "tiempoTotal": 32.01
   },
   {
     "id": 4,
-    "nombre": "pepe",
+    "nombre": "juan",
     "cantPuntos": 0,
-    "tiempoTotal": 30.01
+    "tiempoTotal": 0
   },
   {
     "id": 5,
-    "nombre": "shock",
+    "nombre": "sadfsd",
     "cantPuntos": 0,
-    "tiempoTotal": 30
+    "tiempoTotal": 28.03
   },
   {
     "id": 6,
-    "nombre": "shock",
+    "nombre": "pepe",
     "cantPuntos": 0,
-    "tiempoTotal": 30
+    "tiempoTotal": 0
   },
   {
     "id": 7,
-    "nombre": "pepe",
+    "nombre": "mauro",
     "cantPuntos": 0,
-    "tiempoTotal": 32.01
+    "tiempoTotal": 28.02
   }
 ]

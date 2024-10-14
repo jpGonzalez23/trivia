@@ -18,11 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const nombreInput = document.getElementById('txtNombre');
     const empezarBtn = document.getElementById('empezar-btn');
     const cartsSection = document.getElementById('carts');
-    const contadorElement = document.querySelector('.contador');  // Contenedor para el contador de tiempo
+    const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
     const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
 
     // Inicializa el puntaje en pantalla
     puntajeElement.className = 'puntaje';
+    cartsSection.appendChild(contadorElement);
     cartsSection.appendChild(puntajeElement);
 
     empezarBtn.addEventListener('click', () => {
@@ -46,14 +47,11 @@ function iniciarJuego(nombreJugador) {
 
     document.getElementById('form-abm').style.display = 'none';
     document.getElementById('carts').style.display = 'block';
-    mostrarPregunta();
+    manejarPreguntaYRespuesta();
 }
 
-/**
- * Muestra la pregunta actual junto con las opciones de respuesta.
- * Reinicia el contador de tiempo para cada nueva pregunta.
- */
-function mostrarPregunta() {
+function manejarPreguntaYRespuesta() {
+    // Mostrar la pregunta actual y opciones
     if (preguntaActual < preguntas.length) {
         resetearOpciones();  // Restablece las opciones visuales y de selección
         const pregunta = preguntas[preguntaActual];
@@ -66,6 +64,25 @@ function mostrarPregunta() {
         iniciarContador();  // Reinicia el tiempo para la nueva pregunta
     } else {
         finalizarJuego();
+    }
+
+    // Procesar la respuesta seleccionada por el usuario
+    const respuestaSeleccionada = document.querySelector('input[name="opciones"]:checked');
+    if (respuestaSeleccionada) {
+        const indiceSeleccionado = parseInt(respuestaSeleccionada.value);
+        deshabilitarOpciones();  // Deshabilita las opciones después de seleccionar una
+
+        console.log(`Opción seleccionada: ${preguntaActual} - ${respuestaSeleccionada.value}`); // Debug: Opción seleccionada
+        calcularPuntaje();  // Sumar el puntaje según el tiempo de respuesta
+
+        // Mostrar respuesta correcta antes de avanzar a la siguiente pregunta
+        mostrarRespuestaCorrecta();  
+
+        setTimeout(() => {
+            avanzarPregunta();  // Avanza a la siguiente pregunta después de unos segundos
+        }, 2000);  // Pausa de 2 segundos para que el jugador vea su selección antes de avanzar
+    } else {
+        alert('Por favor, seleccione una opción.');
     }
 }
 
@@ -85,49 +102,50 @@ function iniciarContador() {
     // Iniciar un nuevo intervalo de 1 segundo
     contadorInterval = setInterval(() => {
         tiempoRestante--;
+        console.log(`Tiempo restante: ${tiempoRestante} segundos`); // Debug: Mostrar tiempo restante
+
+        // Aumentar la velocidad del contador cada 10 segundos
+        if (tiempoRestante % 10 === 0 && tiempoRestante > 0) {
+            console.log(`Aumentando la velocidad del contador a cada 10 segundos`); // Debug
+            clearInterval(contadorInterval);  // Limpiar el intervalo anterior
+            // Iniciar un nuevo intervalo más rápido
+            contadorInterval = setInterval(() => {
+                tiempoRestante--;
+                document.querySelector('.contador').textContent = `Tiempo restante: ${tiempoRestante} segundos`;
+
+                if (tiempoRestante === 0) {
+                    clearInterval(contadorInterval);
+                    mostrarRespuestaCorrecta();  // Muestra la respuesta correcta si el tiempo se acaba
+                }
+            }, 800);  // Reducir el tiempo a 800 ms (0.8 segundos) para aumentar la velocidad
+        }
+
+        // Actualizar el contador
         document.querySelector('.contador').textContent = `Tiempo restante: ${tiempoRestante} segundos`;
 
         if (tiempoRestante === 0) {
             clearInterval(contadorInterval);
             mostrarRespuestaCorrecta();  // Muestra la respuesta correcta si el tiempo se acaba
         }
-    }, 1000);
+    }, 1000); // Mantener el intervalo original de 1 segundo al principio
 
     tiempoInicioPregunta = Date.now();  // Marca el inicio del tiempo de respuesta
-}
-
-/**
- * Procesa la respuesta seleccionada por el usuario.
- * Deshabilita las opciones para evitar cambiar la selección.
- */
-function procesarRespuesta() {
-    const respuestaSeleccionada = document.querySelector('input[name="opciones"]:checked');
-    if (respuestaSeleccionada) {
-        const indiceSeleccionado = parseInt(respuestaSeleccionada.value);
-        deshabilitarOpciones();  // Deshabilita las opciones después de seleccionar una
-
-        calcularPuntaje();  // Sumar el puntaje según el tiempo de respuesta
-
-        setTimeout(() => {
-            avanzarPregunta();  // Avanza a la siguiente pregunta después de unos segundos
-        }, 2000);  // Pausa de 2 segundos para que el jugador vea su selección antes de avanzar
-    } else {
-        alert('Por favor, seleccione una opción.');
-    }
 }
 
 /**
  * Muestra la respuesta correcta resaltando la opción correcta.
  */
 function mostrarRespuestaCorrecta() {
-    const correcta = preguntas[preguntaActual].correcta;
-    const opciones = document.querySelectorAll('input[name="opciones"]');
+    if (preguntaActual < preguntas.length) {  // Verifica si hay una pregunta actual
+        const correcta = preguntas[preguntaActual].correcta;
+        const opciones = document.querySelectorAll('input[name="opciones"]');
 
-    opciones.forEach((opcion, index) => {
-        if (index === correcta) {
-            document.querySelectorAll('label')[index].style.backgroundColor = 'lightgreen';  // Resalta la respuesta correcta
-        }
-    });
+        opciones.forEach((opcion, index) => {
+            if (index === correcta) {
+                document.querySelectorAll('label')[index].style.backgroundColor = 'lightgreen';  // Resalta la respuesta correcta
+            }
+        });
+    }
 
     // Esperar 2 segundos antes de avanzar a la siguiente pregunta
     setTimeout(() => {
@@ -144,17 +162,18 @@ function calcularPuntaje() {
     let puntosObtenidos = 0;
 
     // Ajustar los puntos en función del tiempo de respuesta
-    if (tiempoRespuesta < 10) {
-        puntosObtenidos = 5;  // Respuesta rápida
-    } else if (tiempoRespuesta >= 10 && tiempoRespuesta < 20) {
-        puntosObtenidos = 3;  // Respuesta media
-    } else {
-        puntosObtenidos = 1;  // Respuesta lenta
+    if (tiempoRespuesta > 20 && tiempoRespuesta <= 30) {
+        puntosObtenidos = 5;  // Respuesta entre 20 y 30 segundos
+    } else if (tiempoRespuesta > 10 && tiempoRespuesta <= 20) {
+        puntosObtenidos = 2;  // Respuesta entre 10 y 20 segundos
+    } else if (tiempoRespuesta <= 10) {
+        puntosObtenidos = 1;  // Respuesta por debajo de 10 segundos
     }
 
     puntaje += puntosObtenidos;
 
     // Actualizar la visualización del puntaje total
+    console.log(`Puntaje acumulado: ${puntaje} puntos`); // Debug: Mostrar puntaje acumulado
     document.querySelector('.puntaje').textContent = `Puntaje acumulado: ${puntaje} puntos`;
 }
 
@@ -164,7 +183,7 @@ function calcularPuntaje() {
 function avanzarPregunta() {
     preguntaActual++;
     clearInterval(contadorInterval);  // Detiene el contador de la pregunta actual
-    mostrarPregunta();  // Muestra la siguiente pregunta
+    manejarPreguntaYRespuesta();  // Muestra la siguiente pregunta
 }
 
 /**

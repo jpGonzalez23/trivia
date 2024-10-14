@@ -36,13 +36,13 @@ export default class Persona {
     }
 
     set cantPuntos(cantPuntos) {
-        if (cantPuntos > 0 && cantPuntos < 100) {
+        if (cantPuntos > 0 && cantPuntos < 20) {
             this.#cantPuntos = cantPuntos;
         }
     }
 
     set tiempoTotal(tiempoTotal) {
-        if (tiempoTotal > 0 && tiempoTotal < 100) {
+        if (tiempoTotal > 0 && tiempoTotal < 30) {
             this.#tiempoTotal = tiempoTotal;
         }
     }
@@ -55,6 +55,4 @@ export default class Persona {
             tiempoTotal: this.#tiempoTotal
         };
     }
-
-    
 }
