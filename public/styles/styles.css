@@ -77,7 +77,7 @@ label, input, button {
     justify-content: center
 }
 
-.siguiente-btn {
+.btn-siguiente {
     display: flex;
     justify-content: center;
 }

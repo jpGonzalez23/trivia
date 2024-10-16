@@ -1,18 +1,6 @@
-
 import Persona from './persona.js';
 
 // Variables globales
-const nombreInput = document.getElementById('txtNombre');
-const empezarBtn = document.getElementById('empezar-btn');
-const cartsSection = document.getElementById('carts');
-const abmForm = document.getElementById('form-abm');
-const siguienteBtn = document.getElementById('siguiente-btn');
-const tablaSection = document.getElementById('tabla');
-const tablaResultados = document.getElementById('tabla-resultados');
-const rankingBtn = document.getElementById('ver-ranking-btn');
-const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
-const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
-
 let preguntas = [
     { pregunta: "¿Cuál es la capital de Francia?", opciones: ["París", "Roma", "Madrid", "Londres"], correcta: 1 },
     { pregunta: "¿Cuál es el planeta más grande del sistema solar?", opciones: ["Tierra", "Saturno", "Júpiter", "Marte"], correcta: 3 },
@@ -27,7 +15,12 @@ let contadorInterval;
 let tiempoInicioPregunta = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-
+    const nombreInput = document.getElementById('txtNombre');
+    const empezarBtn = document.getElementById('btn-empezar');
+    const cartsSection = document.getElementById('carts');
+    const rankingBtn = document.getElementById('ver-ranking-btn');
+    const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
+    const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
 
     // Inicializa el contador y el puntaje en pantalla
     contadorElement.className = 'contador';
@@ -35,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cartsSection.appendChild(contadorElement);
     cartsSection.appendChild(puntajeElement);
 
-    empezarBtn.addEventListener('click', () => {
+    empezarBtn?.addEventListener('click', () => {
         const nombreJugador = nombreInput.value;
         if (nombreJugador) {
             iniciarJuego(nombreJugador);
@@ -44,17 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    if(siguienteBtn){
-        siguienteBtn.addEventListener('click', procesarRespuesta);
-    }
-    if(rankingBtn){
-        rankingBtn.addEventListener('click', mostrarRanking);
-    }
+    rankingBtn?.addEventListener('click', mostrarRanking);
 });
 
 /**
  * Función para iniciar el juego con el nombre del jugador.
- * Oculta el formulario inicial, muestra las preguntas, y reinicia los datos de juego.
  */
 function iniciarJuego(nombreJugador) {
     jugador = new Persona(nombreJugador);
@@ -68,18 +55,18 @@ function iniciarJuego(nombreJugador) {
 
 /**
  * Muestra la pregunta actual junto con las opciones de respuesta.
- * Reinicia el contador de tiempo para cada nueva pregunta.
  */
 function mostrarPregunta() {
     if (preguntaActual < preguntas.length) {
+        resetearOpciones();
         const pregunta = preguntas[preguntaActual];
         document.getElementById('pregunta-texto').textContent = `Pregunta: ${pregunta.pregunta}`;
         document.querySelectorAll('label span').forEach((opcion, index) => {
             opcion.textContent = pregunta.opciones[index];
         });
 
-        iniciarContador();  // Reinicia el tiempo para la nueva pregunta
-
+        habilitarOpciones();
+        iniciarContador();
     } else {
         finalizarJuego();
     }
@@ -87,64 +74,73 @@ function mostrarPregunta() {
 
 /**
  * Inicia el contador de tiempo para la pregunta actual.
- * Si se acaba el tiempo, avanza automáticamente a la siguiente pregunta.
+ * Si se acaba el tiempo, muestra la respuesta correcta y avanza automáticamente.
  */
 function iniciarContador() {
     tiempoRestante = 30;
     document.querySelector('.contador').textContent = `Tiempo restante: ${tiempoRestante} segundos`;
 
-    // Limpiar cualquier intervalo anterior
     if (contadorInterval) {
         clearInterval(contadorInterval);
     }
 
-    // Iniciar un nuevo intervalo de 1 segundo
     contadorInterval = setInterval(() => {
         tiempoRestante--;
         document.querySelector('.contador').textContent = `Tiempo restante: ${tiempoRestante} segundos`;
 
         if (tiempoRestante === 0) {
             clearInterval(contadorInterval);
-            procesarRespuestaAutomatica();  // Avanza automáticamente si se acaba el tiempo
+            mostrarRespuestaCorrecta();
         }
     }, 1000);
 
-    tiempoInicioPregunta = Date.now();  // Marca el inicio del tiempo de respuesta
+    tiempoInicioPregunta = Date.now();
 }
 
 /**
- * Procesa la respuesta seleccionada por el usuario o avanza automáticamente si no se selecciona ninguna.
+ * Procesa la respuesta seleccionada por el usuario y avanza a la siguiente pregunta.
  */
 function procesarRespuesta() {
     const respuestaSeleccionada = document.querySelector('input[name="opciones"]:checked');
     if (respuestaSeleccionada) {
         const indiceSeleccionado = parseInt(respuestaSeleccionada.value);
+        deshabilitarOpciones();
+
         if (indiceSeleccionado === preguntas[preguntaActual].correcta) {
             calcularPuntaje();
         }
-
-        avanzarPregunta();
+        
+        mostrarRespuestaCorrecta();
     } else {
         alert('Por favor, seleccione una opción.');
     }
 }
 
 /**
- * Procesa la respuesta automática si el tiempo se agota.
+ * Muestra la respuesta correcta y avanza automáticamente a la siguiente pregunta después de 2 segundos.
  */
-function procesarRespuestaAutomatica() {
-    avanzarPregunta();  // Avanza a la siguiente pregunta
+function mostrarRespuestaCorrecta() {
+    const correcta = preguntas[preguntaActual].correcta;
+    const opciones = document.querySelectorAll('input[name="opciones"]');
+
+    opciones.forEach((opcion, index) => {
+        if (index === correcta) {
+            document.querySelectorAll('label')[index].style.backgroundColor = 'lightgreen';
+        }
+    });
+
+    setTimeout(() => {
+        avanzarPregunta();
+    }, 2000);
 }
 
 /**
  * Calcula el puntaje según el tiempo de respuesta.
- * A mayor rapidez, mayor puntaje. Se actualiza también el puntaje acumulado en la interfaz.
  */
 function calcularPuntaje() {
     const tiempoRespuesta = (Date.now() - tiempoInicioPregunta) / 1000;
     let puntosObtenidos = 0;
 
-    // Ajustar los puntos en función del tiempo de respuesta
     if (tiempoRespuesta < 10) {
         puntosObtenidos = 5;  // Respuesta rápida
     } else if (tiempoRespuesta >= 10 && tiempoRespuesta < 20) {
@@ -154,18 +150,17 @@ function calcularPuntaje() {
     }
 
     puntaje += puntosObtenidos;
-
-    // Actualizar la visualización del puntaje total
+    console.log(puntaje);
     document.querySelector('.puntaje').textContent = `Puntaje acumulado: ${puntaje} puntos`;
 }
 
 /**
- * Avanza a la siguiente pregunta.
+ * Avanza a la siguiente pregunta automáticamente.
  */
 function avanzarPregunta() {
     preguntaActual++;
-    clearInterval(contadorInterval);  // Detiene el contador de la pregunta actual
-    mostrarPregunta();  // Muestra la siguiente pregunta
+    clearInterval(contadorInterval);
+    mostrarPregunta();
 }
 
 /**
@@ -220,19 +215,49 @@ function mostrarRanking() {
         .then(response => response.json())
         .then(ranking => {
             const tablaResultados = document.getElementById('tabla-resultados');
-            tablaResultados.innerHTML = '';  // Limpiar la tabla antes de mostrar el ranking
+            tablaResultados.innerHTML = '';
 
             ranking.forEach(jugador => {
                 const nuevaFila = document.createElement('tr');
                 nuevaFila.innerHTML = `
-                <td>${jugador.nombre}</td>
-                <td>${jugador.cantPuntos}</td>
-                <td>${jugador.tiempoTotal} segundos</td>
-            `;
+                    <td>${jugador.nombre}</td>
+                    <td>${jugador.cantPuntos}</td>
+                    <td>${jugador.tiempoTotal} segundos</td>
+                `;
                 tablaResultados.appendChild(nuevaFila);
             });
         })
         .catch(error => {
             console.error('Error al obtener el ranking:', error.message);
         });
+}
+
+/**
+ * Deshabilita todas las opciones de respuesta para evitar cambiar la selección.
+ */
+function deshabilitarOpciones() {
+    document.querySelectorAll('input[name="opciones"]').forEach(opcion => {
+        opcion.disabled = true;
+    });
+}
+
+/**
+ * Habilita todas las opciones de respuesta para una nueva pregunta.
+ */
+function habilitarOpciones() {
+    document.querySelectorAll('input[name="opciones"]').forEach(opcion => {
+        opcion.disabled = false;
+    });
+}
+
+/**
+ * Restablece las opciones de respuesta al estado inicial para la siguiente pregunta.
+ */
+function resetearOpciones() {
+    document.querySelectorAll('input[name="opciones"]').forEach(opcion => {
+        opcion.checked = false;
+    });
+    document.querySelectorAll('label').forEach(label => {
+        label.style.backgroundColor = '';
+    });
 }
