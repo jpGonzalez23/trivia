@@ -42,11 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    if(siguienteBtn) {
+    if (siguienteBtn) {
         siguienteBtn.addEventListener('click', procesarRespuesta);
     }
 
-    if(rankingBtn) {
+    if (rankingBtn) {
         rankingBtn.addEventListener('click', mostrarRanking);
     }
 });
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * Función para iniciar el juego con el nombre del jugador.
  * Oculta el formulario inicial, muestra las preguntas, y reinicia los datos de juego.
- */
+*/
 function iniciarJuego(nombreJugador) {
     jugador = new Persona(nombreJugador);
     puntaje = 0;
@@ -66,10 +66,11 @@ function iniciarJuego(nombreJugador) {
     mostrarPregunta();
 }
 
+
 /**
  * Muestra la pregunta actual junto con las opciones de respuesta.
  * Reinicia el contador de tiempo para cada nueva pregunta.
- */
+*/
 function mostrarPregunta() {
     if (preguntaActual < preguntas.length) {
         const pregunta = preguntas[preguntaActual];
@@ -116,7 +117,7 @@ function iniciarContador() {
 
 /**
  * Procesa la respuesta seleccionada por el usuario o avanza automáticamente si no se selecciona ninguna.
- */
+*/
 function procesarRespuesta() {
     const respuestaSeleccionada = document.querySelector('input[name="opciones"]:checked');
     if (respuestaSeleccionada) {
@@ -133,7 +134,7 @@ function procesarRespuesta() {
 
 /**
  * Procesa la respuesta automática si el tiempo se agota.
- */
+*/
 function procesarRespuestaAutomatica() {
     avanzarPregunta();  // Avanza a la siguiente pregunta
 }
@@ -141,7 +142,7 @@ function procesarRespuestaAutomatica() {
 /**
  * Calcula el puntaje según el tiempo de respuesta.
  * A mayor rapidez, mayor puntaje. Se actualiza también el puntaje acumulado en la interfaz.
- */
+*/
 function calcularPuntaje() {
     const tiempoRespuesta = (Date.now() - tiempoInicioPregunta) / 1000;
     let puntosObtenidos = 0;
@@ -163,7 +164,7 @@ function calcularPuntaje() {
 
 /**
  * Avanza a la siguiente pregunta.
- */
+*/
 function avanzarPregunta() {
     preguntaActual++;
     clearInterval(contadorInterval);  // Detiene el contador de la pregunta actual
@@ -172,7 +173,7 @@ function avanzarPregunta() {
 
 /**
  * Finaliza el juego, muestra los resultados y envía los datos al servidor.
- */
+*/
 function finalizarJuego() {
     const tiempoTotal = ((Date.now() - tiempoInicioPregunta) / 1000).toFixed(2);
 
@@ -184,9 +185,9 @@ function finalizarJuego() {
 
     const nuevaFila = document.createElement('tr');
     nuevaFila.innerHTML = `
-        <td>${jugador.nombre}</td>
-        <td>${jugador.cantPuntos}</td>
-        <td>${jugador.tiempoTotal} segundos</td>
+    <td>${jugador.nombre}</td>
+    <td>${jugador.cantPuntos}</td>
+    <td>${jugador.tiempoTotal} segundos</td>
     `;
     document.getElementById('tabla-resultados').appendChild(nuevaFila);
 
@@ -195,7 +196,7 @@ function finalizarJuego() {
 
 /**
  * Envía los resultados del jugador al servidor mediante una solicitud POST.
- */
+*/
 function enviarResultadosAlServidor(jugador) {
     fetch('/guardar_resultados', {
         method: 'POST',
@@ -216,7 +217,7 @@ function enviarResultadosAlServidor(jugador) {
 
 /**
  * Muestra el ranking de todos los jugadores obteniendo los datos desde el servidor.
- */
+*/
 function mostrarRanking() {
     fetch('/ranking')
         .then(response => response.json())
@@ -227,9 +228,9 @@ function mostrarRanking() {
             ranking.forEach(jugador => {
                 const nuevaFila = document.createElement('tr');
                 nuevaFila.innerHTML = `
-                <td>${jugador.nombre}</td>
-                <td>${jugador.cantPuntos}</td>
-                <td>${jugador.tiempoTotal} segundos</td>
+            <td>${jugador.nombre}</td>
+            <td>${jugador.cantPuntos}</td>
+            <td>${jugador.tiempoTotal} segundos</td>
             `;
                 tablaResultados.appendChild(nuevaFila);
             });
