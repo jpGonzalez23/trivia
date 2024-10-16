@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles/styles.css">
     <title>Lanzamiento</title>
 </head>
+
 <body>
     <!-- Sección de bienvenida y formulario para ingresar el nombre -->
     <section id="form-abm">
@@ -19,9 +21,31 @@
     </section>
 
     <!-- Sección de preguntas -->
-    <section id="section-preguntas" style="display: none;">
-        <h2 id="preguntas"></h2>
-        <div id="opciones"></div>
+    <section id="carts" style="display: none;">
+        <div class="cart-pregunta" id="cart-pregunta">
+            <h2 id="pregunta-texto">Pregunta:</h2>
+            <div id="contador" class="contador"></div>
+            <div class="opciones">
+                <!-- Las opciones se generarán dinámicamente mediante JavaScript -->
+                <label>
+                    <input type="radio" name="opciones" id="opcion1" value="1">
+                    <span>Opción 1</span>
+                </label>
+                <label>
+                    <input type="radio" name="opciones" id="opcion2" value="2">
+                    <span>Opción 2</span>
+                </label>
+                <label>
+                    <input type="radio" name="opciones" id="opcion3" value="3">
+                    <span>Opción 3</span>
+                </label>
+                <label>
+                    <input type="radio" name="opciones" id="opcion4" value="4">
+                    <span>Opción 4</span>
+                </label>
+            </div>
+            <button id="siguiente-btn" type="button" class="siguiente-btn">Siguiente Pregunta</button>
+        </div>
     </section>
 
     <!-- Tabla de resultados -->
@@ -42,6 +66,7 @@
         </table>
     </section>
 
-    <script type="module" src="./js/index.js"></script>
+    <script type="module" src="./models/index.js"></script>
 </body>
+
 </html>

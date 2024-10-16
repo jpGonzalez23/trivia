@@ -1,7 +1,5 @@
-import { Persona } from './models/persona.js';
-import { preguntas } from '../public/data/preguntas.js';
-import { Quiz } from '../public/models/Quiz.js';
-import { UI } from '../public/models/UI.js';
+
+import Persona from './persona.js';
 
 // Variables globales
 const nombreInput = document.getElementById('txtNombre');
@@ -14,6 +12,12 @@ const tablaResultados = document.getElementById('tabla-resultados');
 const rankingBtn = document.getElementById('ver-ranking-btn');
 const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
 const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
+
+let preguntas = [
+    { pregunta: "¿Cuál es la capital de Francia?", opciones: ["París", "Roma", "Madrid", "Londres"], correcta: 1 },
+    { pregunta: "¿Cuál es el planeta más grande del sistema solar?", opciones: ["Tierra", "Saturno", "Júpiter", "Marte"], correcta: 3 },
+    { pregunta: "¿Qué elemento químico tiene el símbolo 'O'?", opciones: ["Oro", "Oxígeno", "Osmio", "Obsidiana"], correcta: 2 },
+];
 
 let jugador = null;
 let puntaje = 0;
@@ -33,20 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     empezarBtn.addEventListener('click', () => {
         const nombreJugador = nombreInput.value;
-        console.log("Se empezo el juego");
         if (nombreJugador) {
             iniciarJuego(nombreJugador);
-
         } else {
             alert('Por favor, ingrese su nombre.');
         }
     });
 
-    if (siguienteBtn) {
+    if(siguienteBtn){
         siguienteBtn.addEventListener('click', procesarRespuesta);
     }
-
-    if (rankingBtn) {
+    if(rankingBtn){
         rankingBtn.addEventListener('click', mostrarRanking);
     }
 });
@@ -54,23 +55,21 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * Función para iniciar el juego con el nombre del jugador.
  * Oculta el formulario inicial, muestra las preguntas, y reinicia los datos de juego.
-*/
+ */
 function iniciarJuego(nombreJugador) {
     jugador = new Persona(nombreJugador);
     puntaje = 0;
     preguntaActual = 0;
-    console.log("se crea al jugador");
 
     document.getElementById('form-abm').style.display = 'none';
     document.getElementById('carts').style.display = 'block';
     mostrarPregunta();
 }
 
-
 /**
  * Muestra la pregunta actual junto con las opciones de respuesta.
  * Reinicia el contador de tiempo para cada nueva pregunta.
-*/
+ */
 function mostrarPregunta() {
     if (preguntaActual < preguntas.length) {
         const pregunta = preguntas[preguntaActual];
@@ -78,7 +77,6 @@ function mostrarPregunta() {
         document.querySelectorAll('label span').forEach((opcion, index) => {
             opcion.textContent = pregunta.opciones[index];
         });
-        console.log("se muestra la pregunta");
 
         iniciarContador();  // Reinicia el tiempo para la nueva pregunta
 
@@ -92,7 +90,6 @@ function mostrarPregunta() {
  * Si se acaba el tiempo, avanza automáticamente a la siguiente pregunta.
  */
 function iniciarContador() {
-    console.log("se inicia el contador");
     tiempoRestante = 30;
     document.querySelector('.contador').textContent = `Tiempo restante: ${tiempoRestante} segundos`;
 
@@ -117,7 +114,7 @@ function iniciarContador() {
 
 /**
  * Procesa la respuesta seleccionada por el usuario o avanza automáticamente si no se selecciona ninguna.
-*/
+ */
 function procesarRespuesta() {
     const respuestaSeleccionada = document.querySelector('input[name="opciones"]:checked');
     if (respuestaSeleccionada) {
@@ -134,7 +131,7 @@ function procesarRespuesta() {
 
 /**
  * Procesa la respuesta automática si el tiempo se agota.
-*/
+ */
 function procesarRespuestaAutomatica() {
     avanzarPregunta();  // Avanza a la siguiente pregunta
 }
@@ -142,7 +139,7 @@ function procesarRespuestaAutomatica() {
 /**
  * Calcula el puntaje según el tiempo de respuesta.
  * A mayor rapidez, mayor puntaje. Se actualiza también el puntaje acumulado en la interfaz.
-*/
+ */
 function calcularPuntaje() {
     const tiempoRespuesta = (Date.now() - tiempoInicioPregunta) / 1000;
     let puntosObtenidos = 0;
@@ -164,7 +161,7 @@ function calcularPuntaje() {
 
 /**
  * Avanza a la siguiente pregunta.
-*/
+ */
 function avanzarPregunta() {
     preguntaActual++;
     clearInterval(contadorInterval);  // Detiene el contador de la pregunta actual
@@ -173,7 +170,7 @@ function avanzarPregunta() {
 
 /**
  * Finaliza el juego, muestra los resultados y envía los datos al servidor.
-*/
+ */
 function finalizarJuego() {
     const tiempoTotal = ((Date.now() - tiempoInicioPregunta) / 1000).toFixed(2);
 
@@ -185,9 +182,9 @@ function finalizarJuego() {
 
     const nuevaFila = document.createElement('tr');
     nuevaFila.innerHTML = `
-    <td>${jugador.nombre}</td>
-    <td>${jugador.cantPuntos}</td>
-    <td>${jugador.tiempoTotal} segundos</td>
+        <td>${jugador.nombre}</td>
+        <td>${jugador.cantPuntos}</td>
+        <td>${jugador.tiempoTotal} segundos</td>
     `;
     document.getElementById('tabla-resultados').appendChild(nuevaFila);
 
@@ -196,7 +193,7 @@ function finalizarJuego() {
 
 /**
  * Envía los resultados del jugador al servidor mediante una solicitud POST.
-*/
+ */
 function enviarResultadosAlServidor(jugador) {
     fetch('/guardar_resultados', {
         method: 'POST',
@@ -217,7 +214,7 @@ function enviarResultadosAlServidor(jugador) {
 
 /**
  * Muestra el ranking de todos los jugadores obteniendo los datos desde el servidor.
-*/
+ */
 function mostrarRanking() {
     fetch('/ranking')
         .then(response => response.json())
@@ -228,9 +225,9 @@ function mostrarRanking() {
             ranking.forEach(jugador => {
                 const nuevaFila = document.createElement('tr');
                 nuevaFila.innerHTML = `
-            <td>${jugador.nombre}</td>
-            <td>${jugador.cantPuntos}</td>
-            <td>${jugador.tiempoTotal} segundos</td>
+                <td>${jugador.nombre}</td>
+                <td>${jugador.cantPuntos}</td>
+                <td>${jugador.tiempoTotal} segundos</td>
             `;
                 tablaResultados.appendChild(nuevaFila);
             });

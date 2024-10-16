@@ -10,5 +10,11 @@
     "nombre": "juan",
     "cantPuntos": 0,
     "tiempoTotal": 0
+  },
+  {
+    "id": 3,
+    "nombre": "jorge",
+    "cantPuntos": 15,
+    "tiempoTotal": 1.06
   }
 ]
