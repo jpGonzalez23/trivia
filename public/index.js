@@ -1,4 +1,7 @@
-import Persona from './persona.js';
+import { Persona } from './models/persona.js';
+import { preguntas } from '../public/data/preguntas.js';
+import { Quiz } from '../public/models/Quiz.js';
+import { UI } from '../public/models/UI.js';
 
 // Variables globales
 const nombreInput = document.getElementById('txtNombre');
@@ -11,12 +14,6 @@ const tablaResultados = document.getElementById('tabla-resultados');
 const rankingBtn = document.getElementById('ver-ranking-btn');
 const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
 const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
-
-let preguntas = [
-    { pregunta: "¿Cuál es la capital de Francia?", opciones: ["París", "Roma", "Madrid", "Londres"], correcta: 1 },
-    { pregunta: "¿Cuál es el planeta más grande del sistema solar?", opciones: ["Tierra", "Saturno", "Júpiter", "Marte"], correcta: 3 },
-    { pregunta: "¿Qué elemento químico tiene el símbolo 'O'?", opciones: ["Oro", "Oxígeno", "Osmio", "Obsidiana"], correcta: 2 },
-];
 
 let jugador = null;
 let puntaje = 0;
@@ -36,15 +33,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     empezarBtn.addEventListener('click', () => {
         const nombreJugador = nombreInput.value;
+        console.log("Se empezo el juego");
         if (nombreJugador) {
             iniciarJuego(nombreJugador);
+
         } else {
             alert('Por favor, ingrese su nombre.');
         }
     });
 
-    siguienteBtn.addEventListener('click', procesarRespuesta);
-    rankingBtn.addEventListener('click', mostrarRanking);
+    if(siguienteBtn) {
+        siguienteBtn.addEventListener('click', procesarRespuesta);
+    }
+
+    if(rankingBtn) {
+        rankingBtn.addEventListener('click', mostrarRanking);
+    }
 });
 
 /**
@@ -55,6 +59,7 @@ function iniciarJuego(nombreJugador) {
     jugador = new Persona(nombreJugador);
     puntaje = 0;
     preguntaActual = 0;
+    console.log("se crea al jugador");
 
     document.getElementById('form-abm').style.display = 'none';
     document.getElementById('carts').style.display = 'block';
@@ -72,6 +77,7 @@ function mostrarPregunta() {
         document.querySelectorAll('label span').forEach((opcion, index) => {
             opcion.textContent = pregunta.opciones[index];
         });
+        console.log("se muestra la pregunta");
 
         iniciarContador();  // Reinicia el tiempo para la nueva pregunta
 
@@ -85,6 +91,7 @@ function mostrarPregunta() {
  * Si se acaba el tiempo, avanza automáticamente a la siguiente pregunta.
  */
 function iniciarContador() {
+    console.log("se inicia el contador");
     tiempoRestante = 30;
     document.querySelector('.contador').textContent = `Tiempo restante: ${tiempoRestante} segundos`;
 

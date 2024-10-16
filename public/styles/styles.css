@@ -57,11 +57,6 @@ label, input, button {
     padding: 10px;
 }
 
-.guardar-btn,
-.cancelar-btn {
-    margin: 10px;
-}
-
 .opciones {
     display: flex;
     justify-content: center;

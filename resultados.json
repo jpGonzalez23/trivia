@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "nombre": "jorge",
+    "cantPuntos": 15,
+    "tiempoTotal": 8.47
+  },
+  {
+    "id": 2,
+    "nombre": "juan",
+    "cantPuntos": 0,
+    "tiempoTotal": 0
+  }
+]
