@@ -10,7 +10,7 @@ let preguntas = [
 let jugador = null;
 let puntaje = 0;
 let preguntaActual = 0;
-let tiempoRestante = 30;  // 30 segundos por pregunta
+let tiempoRestante = 20;  // 30 segundos por pregunta
 let contadorInterval;
 let tiempoInicioPregunta = 0;
 
@@ -77,7 +77,7 @@ function mostrarPregunta() {
  * Si se acaba el tiempo, muestra la respuesta correcta y avanza automáticamente.
  */
 function iniciarContador() {
-    tiempoRestante = 30;
+    tiempoRestante = 20;
     document.querySelector('.contador').textContent = `Tiempo restante: ${tiempoRestante} segundos`;
 
     if (contadorInterval) {
@@ -100,12 +100,15 @@ function iniciarContador() {
 /**
  * Procesa la respuesta seleccionada por el usuario y avanza a la siguiente pregunta.
  */
+
 function procesarRespuesta() {
     const respuestaSeleccionada = document.querySelector('input[name="opciones"]:checked');
+    console.log(respuestaSeleccionada);
     if (respuestaSeleccionada) {
         const indiceSeleccionado = parseInt(respuestaSeleccionada.value);
         deshabilitarOpciones();
-
+        console.log(respuestaSeleccionada);
+        console.log(preguntas[preguntaActual].correcta);
         if (indiceSeleccionado === preguntas[preguntaActual].correcta) {
             calcularPuntaje();
         }
@@ -115,6 +118,16 @@ function procesarRespuesta() {
         alert('Por favor, seleccione una opción.');
     }
 }
+
+/**
+ * Asigna el evento onclick a los radio buttons de las opciones.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const opciones = document.querySelectorAll('input[name="opciones"]');
+    opciones.forEach(opcion => {
+        opcion.addEventListener('click', procesarRespuesta);
+    });
+});
 
 /**
  * Muestra la respuesta correcta y avanza automáticamente a la siguiente pregunta después de 2 segundos.
@@ -141,9 +154,9 @@ function calcularPuntaje() {
     const tiempoRespuesta = (Date.now() - tiempoInicioPregunta) / 1000;
     let puntosObtenidos = 0;
 
-    if (tiempoRespuesta < 10) {
+    if (tiempoRespuesta < 8) {
         puntosObtenidos = 5;  // Respuesta rápida
-    } else if (tiempoRespuesta >= 10 && tiempoRespuesta < 20) {
+    } else if (tiempoRespuesta >= 8 && tiempoRespuesta < 15) {
         puntosObtenidos = 3;  // Respuesta media
     } else {
         puntosObtenidos = 1;  // Respuesta lenta
@@ -151,7 +164,7 @@ function calcularPuntaje() {
 
     puntaje += puntosObtenidos;
     console.log(puntaje);
-    document.querySelector('.puntaje').textContent = `Puntaje acumulado: ${puntaje} puntos`;
+    //document.querySelector('.puntaje').textContent = `Puntaje acumulado: ${puntaje} puntos`;
 }
 
 /**
