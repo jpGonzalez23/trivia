@@ -2,8 +2,12 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const http = require('http');  // Importamos http para crear un servidor
+const socketIo = require('socket.io');  // Importamos socket.io
 
 const app = express();
+const server = http.createServer(app);  // Creamos el servidor HTTP
+const io = socketIo(server);  // Inicializamos Socket.io con el servidor HTTP
 const PORT = 3000;
 const DATA_FILE = path.join(__dirname, 'resultados.json');
 
@@ -47,10 +51,14 @@ app.post('/guardar_resultados', (req, res) => {
                 return res.status(500).json({ message: 'Error en el servidor al guardar los datos.' });
             }
 
+            // Enviamos un evento de Socket.io cuando los resultados se guardan
+            io.emit('nuevo_resultado', nuevoResultado);
+
             return res.json({ message: 'Resultados guardados con éxito.' });
         });
     });
 });
+
 
 app.get('/ranking', (req, res) => {
     fs.readFile(DATA_FILE, 'utf8', (err, data) => {
@@ -76,7 +84,20 @@ app.get('/ranking', (req, res) => {
     });
 });
 
-// Inicia el servidor
-app.listen(PORT, () => {
+// Evento de conexión de Socket.io
+io.on('connection', (socket) => {
+    console.log('Un cliente se ha conectado a Socket.io');
+
+    // Puedes emitir eventos aquí, por ejemplo, enviar un mensaje inicial al cliente
+    socket.emit('mensaje', 'Conexión establecida con el servidor.');
+
+    // Maneja la desconexión de clientes
+    socket.on('disconnect', () => {
+        console.log('Cliente desconectado de Socket.io');
+    });
+});
+
+// Inicia el servidor en el puerto definido
+server.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
