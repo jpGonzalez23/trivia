@@ -1,62 +1,97 @@
+/* Estilos generales */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: green;  /* Fondo verde */
+    color: white;  /* Letras blancas */
+    font-size: 24px;  /* Letras grandes */
+    margin: 0;
+    padding: 0;
+    height: 100vh;  /* Altura completa de la pantalla */
+    display: flex;
+    justify-content: center;  /* Centra el contenido horizontalmente */
+    align-items: center;  /* Centra el contenido verticalmente */
+    text-align: center;
+    flex-direction: column;
 }
 
 section {
     margin: 30px auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: green;  /* Fondo blanco para el formulario */
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-width: 80rem;
+    width: 100%;  /* Asegura que ocupe el ancho disponible */
+    text-align: center;  /* Centra el contenido dentro del section */
 }
 
-h1,
-h2,
-h3 {
-    text-align: center;
+/* Títulos */
+h1, h2, h3 {
+    margin-bottom: 20px;  /* Espacio inferior para separarlos del resto */
 }
 
+/* Estilos para el botón */
+button {
+    padding: 10px 20px;
+    background: linear-gradient(to right, magenta, blue);  /* Gradiente de magenta a azul */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;  /* Bordes redondeados */
+    font-size: 18px;  /* Texto más grande */
+    transition: background 0.3s ease;  /* Transición suave para el hover */
+    margin-top: 20px;  /* Espacio arriba del botón */
+}
+
+button:hover {
+    background: linear-gradient(to right, blue, magenta);  /* Invertir gradiente en hover */
+}
+
+/* Estilos para la tabla */
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
 }
 
-table,
-th,
-td {
+table, th, td {
     border: 1px solid #ddd;
 }
 
-th,
-td {
+th, td {
     padding: 10px;
     text-align: center;
 }
 
-button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
+/* Estilos para el formulario */
 .abm-form {
     display: flex;
     flex-direction: column;
+    align-items: center;  /* Centra el formulario */
+    justify-content: center;
+    gap: 10px;  /* Espacio entre elementos */
 }
 
 label, input, button {
     padding: 10px;
+    font-size: 18px;  /* Tamaño de la fuente más grande */
 }
 
+label {
+    font-size: 20px;  /* Etiquetas grandes */
+}
+
+/* Estilos para el input */
+input[type="text"] {
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    margin-bottom: 20px;
+    width: 250px;
+}
+
+/* Estilos para las opciones */
 .opciones {
     display: flex;
     justify-content: center;
@@ -70,14 +105,15 @@ label, input, button {
     cursor: pointer;
 }
 
+/* Estilos para el contador */
 .contador {
     font-size: 1.5em;
     margin: 10px 0;
     display: flex;
-    justify-content: center
+    justify-content: center;
 }
 
-.btn-siguiente {
-    display: flex;
-    justify-content: center;
+.siguiente-btn {
+    padding: 10px;
+    font-size: 18px;
 }
