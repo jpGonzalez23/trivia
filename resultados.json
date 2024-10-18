@@ -10,5 +10,17 @@
     "nombre": "Federico",
     "cantPuntos": 10,
     "tiempoTotal": 2.91
+  },
+  {
+    "id": 3,
+    "nombre": "pepe",
+    "cantPuntos": 0,
+    "tiempoTotal": 23.03
+  },
+  {
+    "id": 4,
+    "nombre": "shock",
+    "cantPuntos": 10,
+    "tiempoTotal": 3.27
   }
 ]

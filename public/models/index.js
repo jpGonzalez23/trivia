@@ -121,6 +121,13 @@ function procesarRespuesta() {
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const opciones = document.querySelectorAll('input[name="opciones"]');
+    opciones.forEach(opcion => {
+        opcion.addEventListener('click', procesarRespuesta);
+    });
+});
+
 // Muestra la respuesta correcta y avanza automáticamente a la siguiente pregunta después de 2 segundos.
 function mostrarRespuestaCorrecta() {
     const correcta = preguntas[preguntaActual].correcta;
