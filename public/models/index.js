@@ -14,20 +14,23 @@ let tiempoRestante = 20;  // 30 segundos por pregunta
 let contadorInterval;
 let tiempoInicioPregunta = 0;
 
+const socket = io.connect('http://localhost:3000');  // Conectar al servidor de Socket.io
+
+// Variables de UI
+const nombreInput = document.getElementById('txtNombre');
+const empezarBtn = document.getElementById('btn-empezar');
+const cartsSection = document.getElementById('carts');
+const rankingBtn = document.getElementById('ver-ranking-btn');
+const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
+const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
+
+// Inicializa el contador y el puntaje en pantalla
+contadorElement.className = 'contador';
+puntajeElement.className = 'puntaje';
+cartsSection.appendChild(contadorElement);
+cartsSection.appendChild(puntajeElement);
+
 document.addEventListener('DOMContentLoaded', () => {
-    const nombreInput = document.getElementById('txtNombre');
-    const empezarBtn = document.getElementById('btn-empezar');
-    const cartsSection = document.getElementById('carts');
-    const rankingBtn = document.getElementById('ver-ranking-btn');
-    const contadorElement = document.createElement('div');  // Contenedor para el contador de tiempo
-    const puntajeElement = document.createElement('div');  // Contenedor para mostrar puntaje acumulado
-
-    // Inicializa el contador y el puntaje en pantalla
-    contadorElement.className = 'contador';
-    puntajeElement.className = 'puntaje';
-    cartsSection.appendChild(contadorElement);
-    cartsSection.appendChild(puntajeElement);
-
     empezarBtn?.addEventListener('click', () => {
         const nombreJugador = nombreInput.value;
         if (nombreJugador) {
@@ -40,9 +43,19 @@ document.addEventListener('DOMContentLoaded', () => {
     rankingBtn?.addEventListener('click', mostrarRanking);
 });
 
-/**
- * Función para iniciar el juego con el nombre del jugador.
- */
+// Conectar al servidor y escuchar el evento de nuevos resultados
+socket.on('nuevo_resultado', (nuevoResultado) => {
+    const tablaResultados = document.getElementById('tabla-resultados');
+    const nuevaFila = document.createElement('tr');
+    nuevaFila.innerHTML = `
+        <td>${nuevoResultado.nombre}</td>
+        <td>${nuevoResultado.cantPuntos}</td>
+        <td>${nuevoResultado.tiempoTotal} segundos</td>
+    `;
+    tablaResultados.appendChild(nuevaFila);
+});
+
+// Función para iniciar el juego con el nombre del jugador.
 function iniciarJuego(nombreJugador) {
     jugador = new Persona(nombreJugador);
     puntaje = 0;
@@ -53,9 +66,7 @@ function iniciarJuego(nombreJugador) {
     mostrarPregunta();
 }
 
-/**
- * Muestra la pregunta actual junto con las opciones de respuesta.
- */
+// Muestra la pregunta actual junto con las opciones de respuesta.
 function mostrarPregunta() {
     if (preguntaActual < preguntas.length) {
         resetearOpciones();
@@ -72,10 +83,7 @@ function mostrarPregunta() {
     }
 }
 
-/**
- * Inicia el contador de tiempo para la pregunta actual.
- * Si se acaba el tiempo, muestra la respuesta correcta y avanza automáticamente.
- */
+// Inicia el contador de tiempo para la pregunta actual.
 function iniciarContador() {
     tiempoRestante = 20;
     document.querySelector('.contador').textContent = `Tiempo restante: ${tiempoRestante} segundos`;
@@ -97,18 +105,12 @@ function iniciarContador() {
     tiempoInicioPregunta = Date.now();
 }
 
-/**
- * Procesa la respuesta seleccionada por el usuario y avanza a la siguiente pregunta.
- */
-
+// Procesa la respuesta seleccionada por el usuario.
 function procesarRespuesta() {
     const respuestaSeleccionada = document.querySelector('input[name="opciones"]:checked');
-    console.log(respuestaSeleccionada);
     if (respuestaSeleccionada) {
         const indiceSeleccionado = parseInt(respuestaSeleccionada.value);
         deshabilitarOpciones();
-        console.log(respuestaSeleccionada);
-        console.log(preguntas[preguntaActual].correcta);
         if (indiceSeleccionado === preguntas[preguntaActual].correcta) {
             calcularPuntaje();
         }
@@ -119,19 +121,7 @@ function procesarRespuesta() {
     }
 }
 
-/**
- * Asigna el evento onclick a los radio buttons de las opciones.
- */
-document.addEventListener('DOMContentLoaded', () => {
-    const opciones = document.querySelectorAll('input[name="opciones"]');
-    opciones.forEach(opcion => {
-        opcion.addEventListener('click', procesarRespuesta);
-    });
-});
-
-/**
- * Muestra la respuesta correcta y avanza automáticamente a la siguiente pregunta después de 2 segundos.
- */
+// Muestra la respuesta correcta y avanza automáticamente a la siguiente pregunta después de 2 segundos.
 function mostrarRespuestaCorrecta() {
     const correcta = preguntas[preguntaActual].correcta;
     const opciones = document.querySelectorAll('input[name="opciones"]');
@@ -147,9 +137,7 @@ function mostrarRespuestaCorrecta() {
     }, 2000);
 }
 
-/**
- * Calcula el puntaje según el tiempo de respuesta.
- */
+// Calcula el puntaje según el tiempo de respuesta.
 function calcularPuntaje() {
     const tiempoRespuesta = (Date.now() - tiempoInicioPregunta) / 1000;
     let puntosObtenidos = 0;
@@ -167,18 +155,14 @@ function calcularPuntaje() {
     //document.querySelector('.puntaje').textContent = `Puntaje acumulado: ${puntaje} puntos`;
 }
 
-/**
- * Avanza a la siguiente pregunta automáticamente.
- */
+// Avanza a la siguiente pregunta automáticamente.
 function avanzarPregunta() {
     preguntaActual++;
     clearInterval(contadorInterval);
     mostrarPregunta();
 }
 
-/**
- * Finaliza el juego, muestra los resultados y envía los datos al servidor.
- */
+// Finaliza el juego, muestra los resultados y envía los datos al servidor.
 function finalizarJuego() {
     const tiempoTotal = ((Date.now() - tiempoInicioPregunta) / 1000).toFixed(2);
 
@@ -196,33 +180,30 @@ function finalizarJuego() {
     `;
     document.getElementById('tabla-resultados').appendChild(nuevaFila);
 
+    // Enviar los resultados al servidor para actualizarlos globalmente
     enviarResultadosAlServidor(jugador);
 }
 
-/**
- * Envía los resultados del jugador al servidor mediante una solicitud POST.
- */
+// Envía los resultados del jugador al servidor mediante una solicitud POST.
 function enviarResultadosAlServidor(jugador) {
     fetch('/guardar_resultados', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(jugador.toJSON())
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor');
-            }
-            return response.json();
-        })
-        .then(() => mostrarRanking())
-        .catch(error => {
-            console.error('Error al guardar los resultados:', error.message);
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json();
+    })
+    .then(() => mostrarRanking())
+    .catch(error => {
+        console.error('Error al guardar los resultados:', error.message);
+    });
 }
 
-/**
- * Muestra el ranking de todos los jugadores obteniendo los datos desde el servidor.
- */
+// Muestra el ranking de todos los jugadores obteniendo los datos desde el servidor.
 function mostrarRanking() {
     fetch('/ranking')
         .then(response => response.json())
@@ -245,27 +226,21 @@ function mostrarRanking() {
         });
 }
 
-/**
- * Deshabilita todas las opciones de respuesta para evitar cambiar la selección.
- */
+// Deshabilita todas las opciones de respuesta para evitar cambiar la selección.
 function deshabilitarOpciones() {
     document.querySelectorAll('input[name="opciones"]').forEach(opcion => {
         opcion.disabled = true;
     });
 }
 
-/**
- * Habilita todas las opciones de respuesta para una nueva pregunta.
- */
+// Habilita todas las opciones de respuesta para una nueva pregunta.
 function habilitarOpciones() {
     document.querySelectorAll('input[name="opciones"]').forEach(opcion => {
         opcion.disabled = false;
     });
 }
 
-/**
- * Restablece las opciones de respuesta al estado inicial para la siguiente pregunta.
- */
+// Restablece las opciones de respuesta al estado inicial para la siguiente pregunta.
 function resetearOpciones() {
     document.querySelectorAll('input[name="opciones"]').forEach(opcion => {
         opcion.checked = false;
