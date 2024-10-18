@@ -1,83 +1,92 @@
 /* Estilos generales */
 body {
-    font-family: Arial, sans-serif;
-    background-color: green;
-    /* Fondo verde */
-    color: white;
-    /* Letras blancas */
+    font-family: 'Verdana', sans-serif;
+    background-color: #a3c2d1; /* Fondo más claro */
+    color: #ffffff; /* Letras blancas */
     font-size: 24px;
-    /* Letras grandes */
     margin: 0;
     padding: 0;
     height: 100vh;
-    /* Altura completa de la pantalla */
     display: flex;
-    justify-content: center;
-    /* Centra el contenido horizontalmente */
-    align-items: center;
-    /* Centra el contenido verticalmente */
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
     text-align: center;
     flex-direction: column;
+    overflow: hidden;
 }
 
+/* Fondo dinámico */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #6aa0c2, #a0c5d1); /* Gradiente de azul claro a azul más claro */
+    z-index: -1;
+    animation: backgroundShift 10s ease infinite;
+}
+
+@keyframes backgroundShift {
+    0% { background: linear-gradient(135deg, #6aa0c2, #a0c5d1); }
+    50% { background: linear-gradient(135deg, #a0c5d1, #6aa0c2); }
+    100% { background: linear-gradient(135deg, #6aa0c2, #a0c5d1); }
+}
+
+/* Sección */
 section {
-    margin: 30px auto;
-    padding: 20px;
-    background-color: green;
-    /* Fondo blanco para el formulario */
-    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco translúcido */
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra más suave */
     max-width: 80rem;
     width: 100%;
-    /* Asegura que ocupe el ancho disponible */
     text-align: center;
-    /* Centra el contenido dentro del section */
+    transition: all 0.3s ease;
 }
 
-/* Títulos */
-h1,
-h2,
-h3 {
+section:hover {
+    transform: scale(1.05); /* Efecto de escala cuando el usuario pasa el mouse */
+}
+h1{
     margin-bottom: 20px;
-    /* Espacio inferior para separarlos del resto */
+    color: rgb(6, 105, 81); /* Color azul claro */
+    font-family: 'Roboto', sans-serif;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+/* Títulos */
+h2, h3 {
+    margin-bottom: 20px;
+    color: #5d9fc5; /* Color azul claro */
+    font-family: 'Roboto', sans-serif;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Estilos para el botón */
 button {
-    padding: 10px 20px;
-    background: linear-gradient(to right, magenta, blue);
-    /* Gradiente de magenta a azul */
+    padding: 12px 24px;
+    background: linear-gradient(to right, #68c3a3, #82e0aa); /* Gradiente verde claro */
     color: white;
     border: none;
-    cursor: pointer;
     border-radius: 8px;
-    /* Bordes redondeados */
-    font-size: 18px;
-    /* Texto más grande */
-    transition: background 0.3s ease;
-    /* Transición suave para el hover */
-    margin-top: 20px;
-    /* Espacio arriba del botón */
-}
-
-.btn-empezar {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: white;
-    background-color: #3498db;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    /* Para animar el cambio de sombra al pasar el mouse */
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
-    /* Sombra básica */
-
+    font-size: 18px;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+    outline: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
 }
 
+/* Hover y efecto de pulsación */
 button:hover {
-    background: linear-gradient(to right, blue, magenta);
-    /* Invertir gradiente en hover */
-    box-shadow: 10em;
+    background: linear-gradient(to right, #82e0aa, #68c3a3);
+    transform: scale(1.05); /* Le da un toque animado */
+}
+
+button:active {
+    transform: scale(1); /* Efecto al presionar el botón */
 }
 
 /* Estilos para la tabla */
@@ -85,18 +94,31 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-table,
-th,
-td {
+table, th, td {
     border: 1px solid #ddd;
 }
 
-th,
-td {
-    padding: 10px;
+th, td {
+    padding: 12px;
     text-align: center;
+    color: #34495e; /* Gris oscuro */
+    background-color: #ecf0f1; /* Fondo blanco muy claro para la tabla */
+}
+
+th {
+    background-color: #58d68d; /* Verde suave */
+}
+
+td {
+    background-color: #f9f9f9; /* Fondo muy claro */
+}
+
+tr:hover td {
+    background-color: #58d68d; /* Verde suave en hover */
 }
 
 /* Estilos para el formulario */
@@ -104,47 +126,68 @@ td {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Centra el formulario */
     justify-content: center;
-    gap: 10px;
-    /* Espacio entre elementos */
+    gap: 15px;
 }
 
 label,
 input {
     padding: 10px;
     font-size: 18px;
-    /* Tamaño de la fuente más grande */
-}
-
-label {
-    font-size: 20px;
-    /* Etiquetas grandes */
-}
-
-/* Estilos para el input */
-input[type="text"] {
-    padding: 10px;
-    font-size: 18px;
     border-radius: 5px;
     border: none;
     outline: none;
-    margin-bottom: 20px;
+    color: #34495e;
     width: 250px;
+}
+
+/* Input personalizado */
+input[type="text"] {
+    width: 250px;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 2px solid #58d68d; /* Borde verde claro */
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #3498db; /* Borde azul claro cuando está en foco */
 }
 
 /* Estilos para las opciones */
 .opciones {
     display: flex;
     justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
 }
 
 .opciones label {
-    border: 4px solid black;
-    padding: 10px;
-    margin: 10px;
+    padding: 15px;
+    background-color: #ecf0f1; /* Fondo muy claro */
     border-radius: 10px;
     cursor: pointer;
+    border: 3px solid transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    font-size: 18px;
+    font-weight: bold;
+    color: #34495e;
+}
+
+.opciones label:hover {
+    background-color: #a2d9ce; /* Verde claro en hover */
+    border-color: #58d68d; /* Borde verde claro */
+}
+
+.opciones input[type="radio"] {
+    display: none; /* Oculta los inputs de tipo radio */
+}
+
+.opciones input[type="radio"]:checked + label {
+    background-color: #58d68d; /* Verde cuando está seleccionado */
+    border-color: #16a085;
 }
 
 /* Estilos para el contador */
@@ -153,9 +196,23 @@ input[type="text"] {
     margin: 10px 0;
     display: flex;
     justify-content: center;
+    color: #e67e22; /* Color naranja suave para el contador */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+/* Botón siguiente */
 .siguiente-btn {
     padding: 10px;
     font-size: 18px;
+    background-color: #27ae60;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
 }
+
+.siguiente-btn:hover {
+    background-color: #2ecc71; /* Color verde claro en hover */
+}
+
