@@ -2,15 +2,23 @@ import Persona from './persona.js';
 
 // Variables globales
 let preguntas = [
-    { pregunta: "¿Cuál es la capital de Francia?", opciones: ["París", "Roma", "Madrid", "Londres"], correcta: 1 },
-    { pregunta: "¿Cuál es el planeta más grande del sistema solar?", opciones: ["Tierra", "Saturno", "Júpiter", "Marte"], correcta: 3 },
-    { pregunta: "¿Qué elemento químico tiene el símbolo 'O'?", opciones: ["Oro", "Oxígeno", "Osmio", "Obsidiana"], correcta: 2 },
+    { pregunta: "¿Cuántas variedades tiene la nueva línea de shampoo y acondicionador?", opciones: ["4 variedades", "5 variedades", "6 variedades"], correcta: 2 },
+    { pregunta: "¿Qué activos tiene Reparación Profunda – Argán Oil?", opciones: ["Óleo de Argán de Morocco y Miel", "Óleo de Argán de Morocco y Jalea Real", "Aceite de Argán y Miel"], correcta: 1 },
+    { pregunta: "¿Para qué tipo de cabellos es el Brillo Fabuloso – Extra Ácido?", opciones: ["Débiles y sin vida", "Teñidos y/o alisados", "Dañados con frizz"], correcta: 2 },
+    { pregunta: "¿Cuántos años tiene Inecto?", opciones: ["98 años", "100 años", "102 años"], correcta: 3 },
+    { pregunta: "¿Cuál es el shampoo y ACO acorde para el cabello dañado y con frizz?", opciones: ["Coconut Oil", "Fuerza Extrema", "Carbón Purificante"], correcta: 1 },
+    { pregunta: "¿Cuál es el shampoo y ACO que tiene como activos Carbón de Bambú y Agua de Rosas?", opciones: ["Carbón Purificante - PH Neutro", "Fuerza Extrema - Control Caída", "Control Frizz - Coconut Oil"], correcta: 1 },
+    { pregunta: "¿Las oficinas comerciales de la empresa en qué calle están actualmente?", opciones: ["Pacheco", "Álvarez Jonte", "Caracas"], correcta: 3 },
+    { pregunta: "¿Cuál es el beneficio principal del jengibre en la variedad Brillo Fabuloso?", opciones: ["Brillo y suavidad", "Antioxidante y estimulante", "Elasticidad e hidratación"], correcta: 2 },
+    { pregunta: "¿Cuál es la variedad ideal para el cabello débil y con caída?", opciones: ["Argán Oil", "Fuerza Extrema", "Coconut Oil"], correcta: 2 },
+    { pregunta: "¿Cuál es el apellido de Francisco y Martín?", opciones: ["Prado", "Pardo", "Di Prada"], correcta: 1 }
 ];
+
 
 let jugador = null;
 let puntaje = 0;
 let preguntaActual = 0;
-let tiempoRestante = 20;  // 30 segundos por pregunta
+let tiempoRestante = 20; 
 let contadorInterval;
 let tiempoInicioPregunta = 0;
 
