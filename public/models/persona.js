@@ -36,7 +36,7 @@ export default class Persona {
     }
 
     set cantPuntos(cantPuntos) {
-        if (cantPuntos > 0 && cantPuntos < 20) {
+        if (cantPuntos > 0) {
             this.#cantPuntos = cantPuntos;
         }
     }
